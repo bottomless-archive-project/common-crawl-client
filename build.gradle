@@ -1,0 +1,102 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    compileJava.dependsOn(processResources)
+
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+
+    compileTestJava {
+        options.encoding = "UTF-8"
+    }
+
+    apply plugin: 'maven'
+
+    apply plugin: 'signing'
+
+    signing {
+        sign configurations.archives
+    }
+
+    apply plugin: 'maven-publish'
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    inceptionYear '2019'
+                    name project.name
+                    packaging 'jar'
+                    description project.description
+
+                    url 'https://github.com/bottomless-archive-project/common-crawl-client.git'
+
+                    scm {
+                        connection 'git@github.com:bottomless-archive-project/common-crawl-client.git'
+                        developerConnection 'git@github.com:bottomless-archive-project/common-crawl-client.git'
+                        url 'https://github.com/bottomless-archive-project/common-crawl-client.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'MIT License'
+                            url 'https://opensource.org/licenses/MIT'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'gyulalakatos'
+                            name 'Gyula Lakatos'
+                            email 'laxika91@gmail.com'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allJava
+        classifier 'sources'
+    }
+
+    task javadocJar(type: Jar) {
+        from javadoc
+        classifier 'javadoc'
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
+
+    dependencies {
+        compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+        annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+    }
+}
