@@ -1,3 +1,5 @@
 dependencies {
+    compile group: 'org.jetbrains', name: 'annotations', version: '18.0.0'
+
     compile group: 'com.github.davidmoten', name: 'io-extras', version: '0.1'
 }

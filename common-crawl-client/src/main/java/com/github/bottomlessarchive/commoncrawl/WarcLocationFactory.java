@@ -10,8 +10,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.davidmoten.io.extras.IOUtil;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This factory is responsible for creating the locations to the WARC files for a batch of Common Crawl corpus.
@@ -30,7 +32,7 @@ public class WarcLocationFactory {
      * @param crawlId the id of the Common Crawl crawl to get the locations for
      * @return the locations of the WARC files
      */
-    public List<URL> buildLocationUrlList(final String crawlId) {
+    public List<URL> buildLocationUrlList(@NotNull @NonNull final String crawlId) {
         try (final Stream<URL> stream = buildLocationUrlStream(crawlId)) {
             return stream.collect(Collectors.toList());
         }
@@ -45,7 +47,7 @@ public class WarcLocationFactory {
      * @param crawlId the id of the Common Crawl crawl to get the locations for
      * @return the locations of the WARC files
      */
-    public Stream<URL> buildLocationUrlStream(final String crawlId) {
+    public Stream<URL> buildLocationUrlStream(@NotNull @NonNull final String crawlId) {
         return buildLocationStringStream(crawlId)
             .map(location -> {
                 try {
@@ -63,7 +65,7 @@ public class WarcLocationFactory {
      * @param crawlId the id of the Common Crawl crawl to get the locations for
      * @return the locations of the WARC files
      */
-    public List<String> buildLocationStringList(final String crawlId) {
+    public List<String> buildLocationStringList(@NotNull @NonNull final String crawlId) {
         try (final Stream<String> stream = buildLocationStringStream(crawlId)) {
             return stream.collect(Collectors.toList());
         }
@@ -77,7 +79,7 @@ public class WarcLocationFactory {
      * @param crawlId the id of the Common Crawl crawl to get the locations for
      * @return the locations of the WARC files
      */
-    public Stream<String> buildLocationStringStream(final String crawlId) {
+    public Stream<String> buildLocationStringStream(@NotNull @NonNull final String crawlId) {
         try {
             final BufferedReader downloadPathsReader = buildWarcReader(crawlId);
 
